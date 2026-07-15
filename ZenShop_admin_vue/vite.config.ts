@@ -16,7 +16,7 @@ export default defineConfig({
   },
   server: {
     host: '127.0.0.1',
-    port: 1234,
+    port: 2001,
     // ========== 新增代理配置 ==========
     proxy: {
       '/api': {  // 匹配所有以/api开头的请求
