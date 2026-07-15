@@ -8,7 +8,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/ZenShop?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
     username: root
-    password: zxw030406
+    password: 
     driver-class-name: com.mysql.cj.jdbc.Driver
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
@@ -21,7 +21,7 @@ spring:
     redis:
       host: localhost
       port: 6379
-      password: zxw030406
+      password: 
 
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**/*.xml
@@ -34,10 +34,10 @@ mybatis-plus:
           logic-delete-value: 0
           logic-not-delete-value: 1
 obs:
-  access-key: HPUAGFQIKY0VTZKQ8DYH
-  secret-key: SWgRyLKnAfT7ph8714oaox1E5ozYImieJ2On9VBc
-  bucket-name: zxw-web-framework
-  endpoint: obs.cn-north-4.myhuaweicloud.com
+  access-key: 
+  secret-key: 
+  bucket-name: 
+  endpoint: 
 knife4j:
   enable: false
   setting:
