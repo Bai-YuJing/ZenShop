@@ -1,8 +1,14 @@
 # 基于SpringBoot+Vue的商城系统
 
+## 联系方式
+
+zxw030406@outlook.com
+
+1522993472@qq.com
+
 ## 后端
 
-基于 Spring Boot + MyBatis-Plus 的 B2C 电商平台，支持多商家入驻、商品管理、订单交易、评价评分等功能。
+基于 Spring Boot + MyBatis-Plus 的电商平台，支持多商家入驻、商品管理、订单交易、评价评分等功能。
 
 ### 技术栈
 
