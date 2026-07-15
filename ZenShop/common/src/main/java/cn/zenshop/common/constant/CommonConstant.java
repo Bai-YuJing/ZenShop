@@ -13,7 +13,7 @@ public class CommonConstant {
     /**
      * 管理员头像
      */
-    public static final String ADMIN_AVATAR_PATH="admin/avatar/";
+    public static final String ADMIN_AVATAR_PATH=null;
     /**
      * 管理员头像
      */
