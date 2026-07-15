@@ -1,4 +1,18 @@
+/*
+ Navicat Premium Data Transfer
 
+ Source Server         : 1.14.94.234
+ Source Server Type    : MySQL
+ Source Server Version : 50743
+ Source Host           : 1.14.94.234:3306
+ Source Schema         : ZenShop
+
+ Target Server Type    : MySQL
+ Target Server Version : 50743
+ File Encoding         : 65001
+
+ Date: 15/07/2026 21:17:50
+*/
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
@@ -23,12 +37,12 @@ CREATE TABLE `admin`  (
   `updated_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_username`(`username`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 20 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '管理员表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '管理员表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of admin
 -- ----------------------------
-INSERT INTO `admin` VALUES (1, 'admin', 'e10adc3949ba59abbe56e057f20f883e', '超级管理员', NULL, NULL, NULL, 2, 1, NULL, 1, '2026-07-15 17:49:23', '2026-07-15 17:49:35');
+INSERT INTO `admin` VALUES (1, 'admin', 'e10adc3949ba59abbe56e057f20f883e', '超级管理员', '13488992233', '123@qq.com', 'https://zxw-web-framework.obs.cn-north-4.myhuaweicloud.com/ZenShop/nulld8ea1e3e-16f9-4d3d-91e4-ed59e208f8c1.png', 2, 1, '2026-07-15 21:05:59', 1, '2026-07-15 17:49:23', '2026-07-15 21:06:13');
 
 -- ----------------------------
 -- Table structure for business
@@ -68,7 +82,7 @@ CREATE TABLE `business_address`  (
   `detailed_address` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '详细地址',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_business_id`(`business_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 53 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '商家地址表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '商家地址表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of business_address
@@ -91,7 +105,7 @@ CREATE TABLE `business_rating`  (
   INDEX `idx_business_id`(`business_id`) USING BTREE,
   INDEX `idx_product_id`(`product_id`) USING BTREE,
   INDEX `idx_user_id`(`user_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 46 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '商家评分表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '商家评分表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of business_rating
@@ -111,7 +125,7 @@ CREATE TABLE `business_review_reason`  (
   `created_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_business_id`(`business_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '商家审核原因记录表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '商家审核原因记录表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of business_review_reason
@@ -130,6 +144,16 @@ CREATE TABLE `category`  (
 -- ----------------------------
 -- Records of category
 -- ----------------------------
+INSERT INTO `category` VALUES (1, '餐饮美食');
+INSERT INTO `category` VALUES (2, '服装鞋帽');
+INSERT INTO `category` VALUES (3, '数码电器');
+INSERT INTO `category` VALUES (4, '美妆护肤');
+INSERT INTO `category` VALUES (5, '家居生活');
+INSERT INTO `category` VALUES (6, '母婴用品');
+INSERT INTO `category` VALUES (7, '运动户外');
+INSERT INTO `category` VALUES (8, '图书文具');
+INSERT INTO `category` VALUES (9, '珠宝首饰');
+INSERT INTO `category` VALUES (10, '生鲜食品');
 
 -- ----------------------------
 -- Table structure for coupon
@@ -148,11 +172,12 @@ CREATE TABLE `coupon`  (
   `total` int(11) NULL DEFAULT NULL COMMENT '数量',
   `is_delete` tinyint(4) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '优惠券总表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '优惠券总表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of coupon
 -- ----------------------------
+INSERT INTO `coupon` VALUES (1, 1, '测试', '测试测试测试测试', '2026-07-15 00:00:00', '2026-08-21 00:00:00', 1, '2026-07-15 21:01:22', '2026-07-15 21:01:22', 10, NULL);
 
 -- ----------------------------
 -- Table structure for coupon_discount
@@ -165,7 +190,7 @@ CREATE TABLE `coupon_discount`  (
   `max_discount_amount` decimal(10, 2) NULL DEFAULT NULL COMMENT '最高减免金额（null=无上限）',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_coupon_id`(`coupon_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '折扣券详情表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '折扣券详情表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of coupon_discount
@@ -182,11 +207,12 @@ CREATE TABLE `coupon_full_reduction`  (
   `discount_amount` decimal(10, 2) NOT NULL COMMENT '减Y元',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_coupon_id`(`coupon_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '满减券详情表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '满减券详情表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of coupon_full_reduction
 -- ----------------------------
+INSERT INTO `coupon_full_reduction` VALUES (1, 1, 101.00, 100.00);
 
 -- ----------------------------
 -- Table structure for order_cancel
@@ -222,7 +248,7 @@ CREATE TABLE `order_detail`  (
   `created_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_order_id`(`order_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 34 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '订单详情表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '订单详情表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of order_detail
@@ -253,7 +279,7 @@ CREATE TABLE `orders`  (
   INDEX `idx_user_id`(`user_id`) USING BTREE,
   INDEX `idx_business_id`(`business_id`) USING BTREE,
   INDEX `idx_order_no`(`order_no`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 25 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '订单表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '订单表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of orders
@@ -279,7 +305,7 @@ CREATE TABLE `product`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_business_id`(`business_id`) USING BTREE,
   INDEX `idx_category_id`(`category_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 161 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '商品表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '商品表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of product
@@ -298,7 +324,7 @@ CREATE TABLE `product_category`  (
   `status` tinyint(4) NOT NULL DEFAULT 1 COMMENT '是否上架: 1=上架, 0=下架',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_business_id`(`business_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 116 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '商品分类表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '商品分类表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of product_category
@@ -316,7 +342,7 @@ CREATE TABLE `product_image`  (
   `created_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_product_id`(`product_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 190 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '商品图片表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '商品图片表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of product_image
@@ -340,7 +366,7 @@ CREATE TABLE `user`  (
   `updated_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_username`(`username`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 16 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '用户表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '用户表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of user
@@ -362,7 +388,7 @@ CREATE TABLE `user_address`  (
   `is_delete` tinyint(4) NOT NULL DEFAULT 1 COMMENT '是否删除: 1=未删, 0=已删',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_user_id`(`user_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 16 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '用户地址表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '用户地址表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of user_address
@@ -383,7 +409,7 @@ CREATE TABLE `user_coupon`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_user_id`(`user_id`) USING BTREE,
   INDEX `idx_coupon_id`(`coupon_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 10 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '用户优惠券表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '用户优惠券表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of user_coupon
@@ -399,7 +425,7 @@ CREATE TABLE `user_default_address`  (
   `user_id` bigint(20) NOT NULL COMMENT '用户ID',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_user_id`(`user_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '用户默认地址表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '用户默认地址表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of user_default_address
