@@ -1,0 +1,35 @@
+# Node.js 依赖（前后端的 node_modules 全部忽略）
+node_modules
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+
+# 配置文件（包含敏感信息的配置）
+application.yml
+application-.yml
+application.properties
+application-.properties
+
+# 环境变量文件
+.env
+.env.local
+.env..local
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# IDE配置（可选，看个人习惯）
+.vscode
+.idea
+.iml
+
+# 日志文件
+logs
+.log
+
+# 编译输出
+dist
+build
+target
+.class
