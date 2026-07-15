@@ -4,7 +4,11 @@ npm-debug.log
 yarn-debug.log
 yarn-error.log
 
-
+# 配置文件
+application.yml
+application-.yml
+application.properties
+application-.properties
 
 # 环境变量文件
 .env
