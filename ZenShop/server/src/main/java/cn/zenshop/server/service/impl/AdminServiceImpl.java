@@ -100,7 +100,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper,Admin> implements 
         // 生成token 写入redis
         String token = UUID.randomUUID().toString();
         String tokeKey = RedisConstant.ADMIN_TOKEN + token;
-        stringRedisTemplate.opsForValue().set(tokeKey, String.valueOf(admin.getId()), RedisConstant.ADMIN_TOKEN_TTL, TimeUnit.MINUTES);
+        stringRedisTemplate.opsForValue().set(tokeKey, String.valueOf(admin.getId()), RedisConstant.ADMIN_TOKEN_TTL, TimeUnit.SECONDS);
 
         log.info("token:{}",token);
         return token;

@@ -50,7 +50,7 @@ public class AdminInterceptor implements HandlerInterceptor {
         // 存入ThreadLocal，供后续使用
         ThreadLocalContext.set(Long.valueOf(userIdStr));
         // 刷新token过期时间
-        stringRedisTemplate.expire(RedisConstant.ADMIN_TOKEN + token, RedisConstant.ADMIN_TOKEN_TTL, TimeUnit.MINUTES);
+        stringRedisTemplate.expire(RedisConstant.ADMIN_TOKEN + token, RedisConstant.ADMIN_TOKEN_TTL, TimeUnit.SECONDS);
 
         // 检查是否需要超级管理员权限
         if (handlerMethod.hasMethodAnnotation(SuperAdmin.class)) {

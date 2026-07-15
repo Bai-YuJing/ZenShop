@@ -15,6 +15,7 @@ import cn.zenshop.server.mapper.CouponMapper;
 import cn.zenshop.server.mapper.UserCouponMapper;
 import cn.zenshop.server.service.CouponService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
@@ -124,12 +125,14 @@ public class CouponServiceImpl implements CouponService {
             throw new BaseException(MessageConstant.COUPON_ALREADY_CLAIMED);
         }
 
-        // 3. 校验总数限制（null=无限）
+        // 3. 扣减库存（原子操作，null=无限）
         if (coupon.getTotal() != null) {
-            Long claimed = userCouponMapper.selectCount(
-                    new LambdaQueryWrapper<UserCoupon>()
-                            .eq(UserCoupon::getCouponId, couponId));
-            if (claimed >= coupon.getTotal()) {
+            int updated = couponMapper.update(null,
+                    new LambdaUpdateWrapper<Coupon>()
+                            .eq(Coupon::getId, couponId)
+                            .gt(Coupon::getTotal, 0)
+                            .setSql("total = total - 1"));
+            if (updated == 0) {
                 throw new BaseException(MessageConstant.COUPON_SOLD_OUT);
             }
         }

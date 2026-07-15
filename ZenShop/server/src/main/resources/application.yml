@@ -7,8 +7,8 @@ spring:
       matching-strategy: ant_path_matcher
   datasource:
     url: jdbc:mysql://localhost:3306/ZenShop?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
-    username: 数据库账号
-    password: 数据库密码
+    username: root
+    password: zxw030406
     driver-class-name: com.mysql.cj.jdbc.Driver
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
@@ -21,7 +21,7 @@ spring:
     redis:
       host: localhost
       port: 6379
-      password: redis密码
+      password: zxw030406
 
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**/*.xml
@@ -34,10 +34,10 @@ mybatis-plus:
           logic-delete-value: 0
           logic-not-delete-value: 1
 obs:
-  access-key: 华为obsAk
-  secret-key: 华为obsSk
-  bucket-name: 华为obs桶名称
-  endpoint: 华为obs地址
+  access-key: HPUAGFQIKY0VTZKQ8DYH
+  secret-key: SWgRyLKnAfT7ph8714oaox1E5ozYImieJ2On9VBc
+  bucket-name: zxw-web-framework
+  endpoint: obs.cn-north-4.myhuaweicloud.com
 knife4j:
   enable: false
   setting:
