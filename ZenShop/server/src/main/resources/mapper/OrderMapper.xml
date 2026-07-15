@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.zenshop.server.mapper.OrderMapper">
+
+    <resultMap id="businessOrderMap" type="cn.zenshop.model.vo.BusinessOrderVo">
+        <id column="id" property="id"/>
+        <result column="order_no" property="orderNo"/>
+        <result column="total_amount" property="totalAmount"/>
+        <result column="actual_amount" property="actualAmount"/>
+        <result column="status" property="status"/>
+        <result column="created_time" property="createdTime"/>
+        <collection property="items" ofType="cn.zenshop.model.vo.BusinessOrderItemVo">
+            <result column="product_id" property="productId"/>
+            <result column="product_name" property="productName"/>
+            <result column="product_image" property="productImage"/>
+            <result column="price" property="price"/>
+            <result column="quantity" property="quantity"/>
+            <result column="score" property="score"/>
+            <result column="rating_content" property="ratingContent"/>
+            <result column="rated" property="rated"/>
+        </collection>
+    </resultMap>
+
+    <select id="selectBusinessOrders" resultMap="businessOrderMap">
+        select o.id,
+               o.order_no,
+               o.total_amount,
+               o.actual_amount,
+               o.status,
+               o.created_time,
+               od.product_id,
+               p.name  product_name,
+               (select pi.url from product_image pi where pi.product_id = p.id order by pi.id limit 1) product_image,
+               od.price,
+               od.quantity,
+               br.score,
+               br.content rating_content
+        from orders o
+        left join order_detail od on o.id = od.order_id
+        left join product p on od.product_id = p.id
+        left join business_rating br on br.product_id = od.product_id and br.order_no = o.order_no
+        <where>
+            o.business_id = #{businessId}
+            and o.is_delete = 1
+            <if test="statusList != null and statusList.size > 0">
+                and o.status in
+                <foreach collection="statusList" item="s" open="(" separator="," close=")">
+                    #{s}
+                </foreach>
+            </if>
+            <if test="dto.startTime != null">
+                and o.created_time &gt;= #{dto.startTime}
+            </if>
+            <if test="dto.endTime != null">
+                and o.created_time &lt;= #{dto.endTime}
+            </if>
+            <if test="dto.orderNo != null and dto.orderNo != ''">
+                and o.order_no like concat('%', #{dto.orderNo}, '%')
+            </if>
+            <if test="dto.productName != null and dto.productName != ''">
+                and p.name like concat('%', #{dto.productName}, '%') collate utf8mb4_general_ci
+            </if>
+            <if test="dto.productId != null">
+                and exists (select 1 from order_detail od2 where od2.order_id = o.id and od2.product_id = #{dto.productId})
+            </if>
+            <if test="dto.minScore != null">
+                and exists (select 1 from business_rating br2, order_detail od2
+                    where br2.product_id = od2.product_id and br2.order_no = o.order_no
+                    and od2.order_id = o.id and br2.score &gt;= #{dto.minScore})
+            </if>
+            <if test="dto.maxScore != null">
+                and exists (select 1 from business_rating br2, order_detail od2
+                    where br2.product_id = od2.product_id and br2.order_no = o.order_no
+                    and od2.order_id = o.id and br2.score &lt;= #{dto.maxScore})
+            </if>
+            <!-- 已评价/未评价筛选 -->
+            <if test="dto.rated != null and dto.rated == 1">
+                and exists (select 1 from business_rating br2, order_detail od2
+                    where br2.product_id = od2.product_id and br2.order_no = o.order_no
+                    and od2.order_id = o.id)
+            </if>
+            <if test="dto.rated != null and dto.rated == 0">
+                and not exists (select 1 from business_rating br2, order_detail od2
+                    where br2.product_id = od2.product_id and br2.order_no = o.order_no
+                    and od2.order_id = o.id)
+            </if>
+        </where>
+        order by o.created_time desc
+        <if test="dto.amountSort != null and (dto.amountSort == 'ASC' or dto.amountSort == 'DESC' or dto.amountSort == 'asc' or dto.amountSort == 'desc')">
+            , o.actual_amount ${dto.amountSort}
+        </if>
+    </select>
+
+    <select id="selectUserOrders" resultMap="businessOrderMap">
+        select o.id,
+               o.order_no,
+               o.total_amount,
+               o.actual_amount,
+               o.status,
+               o.created_time,
+               od.product_id,
+               p.name  product_name,
+               (select pi.url from product_image pi where pi.product_id = p.id order by pi.id limit 1) product_image,
+               od.price,
+               od.quantity
+        from orders o
+        left join order_detail od on o.id = od.order_id
+        left join product p on od.product_id = p.id
+        <where>
+            o.user_id = #{userId}
+            and o.is_delete = 1
+            <if test="statusList != null and statusList.size > 0">
+                and o.status in
+                <foreach collection="statusList" item="s" open="(" separator="," close=")">
+                    #{s}
+                </foreach>
+            </if>
+            <if test="dto.orderNo != null and dto.orderNo != ''">
+                and o.order_no like concat('%', #{dto.orderNo}, '%')
+            </if>
+        </where>
+        order by o.created_time desc
+        <if test="dto.amountSort != null and (dto.amountSort == 'ASC' or dto.amountSort == 'DESC' or dto.amountSort == 'asc' or dto.amountSort == 'desc')">
+            , o.actual_amount ${dto.amountSort}
+        </if>
+    </select>
+
+    <select id="selectUserOrderIds" resultType="java.lang.Long">
+        select o2.id
+        from orders o2
+        <where>
+            o2.user_id = #{userId}
+            and o2.is_delete = 1
+            <if test="statusList != null and statusList.size > 0">
+                and o2.status in
+                <foreach collection="statusList" item="s" open="(" separator="," close=")">
+                    #{s}
+                </foreach>
+            </if>
+            <if test="dto.orderNo != null and dto.orderNo != ''">
+                and o2.order_no like concat('%', #{dto.orderNo}, '%')
+            </if>
+        </where>
+        order by o2.created_time desc
+        <if test="dto.amountSort != null and (dto.amountSort == 'ASC' or dto.amountSort == 'DESC' or dto.amountSort == 'asc' or dto.amountSort == 'desc')">
+            , o2.actual_amount ${dto.amountSort}
+        </if>
+        limit #{limit} offset #{offset}
+    </select>
+
+    <select id="selectBusinessOrderIds" resultType="java.lang.Long">
+        select o2.id
+        from orders o2
+        <where>
+            o2.business_id = #{businessId}
+            and o2.is_delete = 1
+            <if test="statusList != null and statusList.size > 0">
+                and o2.status in
+                <foreach collection="statusList" item="s" open="(" separator="," close=")">
+                    #{s}
+                </foreach>
+            </if>
+            <if test="dto.startTime != null">
+                and o2.created_time &gt;= #{dto.startTime}
+            </if>
+            <if test="dto.endTime != null">
+                and o2.created_time &lt;= #{dto.endTime}
+            </if>
+            <if test="dto.orderNo != null and dto.orderNo != ''">
+                and o2.order_no like concat('%', #{dto.orderNo}, '%')
+            </if>
+        </where>
+        order by o2.created_time desc
+        <if test="dto.amountSort != null and (dto.amountSort == 'ASC' or dto.amountSort == 'DESC' or dto.amountSort == 'asc' or dto.amountSort == 'desc')">
+            , o2.actual_amount ${dto.amountSort}
+        </if>
+        limit #{limit} offset #{offset}
+    </select>
+
+    <select id="countUserOrders" resultType="long">
+        select count(*)
+        from orders o
+        <where>
+            o.user_id = #{userId}
+            and o.is_delete = 1
+            <if test="statusList != null and statusList.size > 0">
+                and o.status in
+                <foreach collection="statusList" item="s" open="(" separator="," close=")">
+                    #{s}
+                </foreach>
+            </if>
+            <if test="dto.orderNo != null and dto.orderNo != ''">
+                and o.order_no like concat('%', #{dto.orderNo}, '%')
+            </if>
+        </where>
+    </select>
+
+    <select id="selectOrderStatusCounts" resultType="cn.zenshop.model.vo.OrderStatusCountVo">
+        select
+            sum(case when o.status = 0 then 1 else 0 end) pending_payment,
+            sum(case when o.status = 1 then 1 else 0 end) pending_delivery,
+            sum(case when o.status = 2 then 1 else 0 end) receiving,
+            sum(case when o.status = 3 then 1 else 0 end) completed
+        from orders o
+        where o.user_id = #{userId}
+          and o.is_delete = 1
+    </select>
+
+    <select id="selectOrderDetailById" resultMap="businessOrderMap">
+        select o.id,
+               o.order_no,
+               o.total_amount,
+               o.actual_amount,
+               o.status,
+               o.created_time,
+               od.product_id,
+               p.name  product_name,
+               (select pi.url from product_image pi where pi.product_id = p.id order by pi.id limit 1) product_image,
+               od.price,
+               od.quantity,
+               case when br.id is not null then 1 else 0 end rated
+        from orders o
+        left join order_detail od on o.id = od.order_id
+        left join product p on od.product_id = p.id
+        left join business_rating br on br.product_id = od.product_id and br.order_no = o.order_no
+        where o.id = #{orderId}
+          and o.user_id = #{userId}
+          and o.is_delete = 1
+    </select>
+
+    <select id="selectUnreviewedOrders" resultType="cn.zenshop.model.vo.UnreviewedOrderVo">
+        select o.id order_id,
+               o.order_no,
+               o.total_amount,
+               o.actual_amount,
+               o.status,
+               o.created_time,
+               od.product_id,
+               p.name  product_name,
+               (select pi.url from product_image pi where pi.product_id = p.id order by pi.id limit 1) product_image,
+               od.price,
+               od.quantity
+        from orders o
+        left join order_detail od on o.id = od.order_id
+        left join product p on od.product_id = p.id
+        <where>
+            o.user_id = #{userId}
+            and o.status = 3
+            and o.is_delete = 1
+            and not exists (
+                select 1 from business_rating br
+                where br.product_id = od.product_id
+                  and br.user_id = #{userId}
+            )
+        </where>
+        order by o.created_time desc
+    </select>
+
+    <select id="selectCancelOrders" resultType="cn.zenshop.model.vo.OrderCancelVo">
+        select oc.id,
+               oc.order_id,
+               oc.order_no,
+               o.actual_amount,
+               oc.reason_type,
+               oc.reason,
+               oc.status,
+               o.status order_status,
+               oc.created_time
+        from order_cancel oc
+        left join orders o on o.id = oc.order_id
+        <where>
+            o.business_id = #{businessId}
+            <if test="status != null">
+                and o.status = #{status}
+            </if>
+        </where>
+        order by oc.created_time desc
+    </select>
+
+</mapper>

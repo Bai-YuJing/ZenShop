@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.zenshop.server.mapper.ProductMapper">
+
+    <!-- 商品分页查询（不含图片，图片单独查询后组装） -->
+    <select id="getProductList" resultType="cn.zenshop.model.vo.ProductPageVo">
+        select p.id,
+        p.name,
+        p.business_id,
+        p.category_id,
+        pc.name categoryName,
+        p.description,
+        p.price,
+        p.stock,
+        p.sales,
+        p.status,
+        p.updated_time,
+        (select round(avg(br.score), 1) from business_rating br where br.product_id = p.id) rating
+        from product p
+        left join product_category pc on p.category_id = pc.id
+        <where>
+            <!-- 商品名称模糊查询 -->
+            <if test="dto.getName() != null and dto.getName() != ''">
+                and p.name like concat('%',#{dto.name},'%') collate utf8mb4_general_ci
+            </if>
+            <!-- 商品状态筛选 -->
+            <if test="dto.getStatus() != null">
+                and p.status = #{dto.status}
+            </if>
+            <!-- 分类筛选 -->
+            <if test="dto.getCategoryId() != null">
+                and p.category_id = #{dto.categoryId}
+            </if>
+            <!-- 价格区间筛选 -->
+            <if test="dto.getMinPrice() != null">
+                and p.price &gt;= #{dto.minPrice}
+            </if>
+            <if test="dto.getMaxPrice() != null">
+                and p.price &lt;= #{dto.maxPrice}
+            </if>
+            <!-- 商家筛选 -->
+            <if test="dto.getBusinessId() != null and dto.getBusinessId() != ''">
+                and p.business_id = #{dto.businessId}
+            </if>
+        </where>
+        <!-- 排序（仅允许 ASC/DESC 防 SQL 注入） -->
+        <if test="dto.getSalesSort() != null and (dto.getSalesSort() == 'ASC' or dto.getSalesSort() == 'DESC' or dto.getSalesSort() == 'asc' or dto.getSalesSort() == 'desc')">
+            order by p.sales ${dto.salesSort}
+        </if>
+        <if test="dto.getStockSort() != null and (dto.getStockSort() == 'ASC' or dto.getStockSort() == 'DESC' or dto.getStockSort() == 'asc' or dto.getStockSort() == 'desc')">
+            order by p.stock ${dto.stockSort}
+        </if>
+
+    </select>
+    <select id="userGetProductList" resultType="cn.zenshop.model.vo.ProductPageVo">
+        select p.id,
+        p.name,
+        p.business_id,
+        p.category_id,
+        p.description,
+        p.price,
+        p.sales,
+        (select round(avg(br.score), 1) from business_rating br where br.product_id = p.id) rating
+        from product p
+        left join product_category pc on p.category_id = pc.id
+        <where>
+            <!-- 商品名称模糊查询 -->
+            <if test="dto.getName() != null and dto.getName() != ''">
+                and p.name like concat('%',#{dto.name},'%') collate utf8mb4_general_ci
+            </if>
+            <!-- 价格区间筛选 -->
+            <if test="dto.getMinPrice() != null">
+                and p.price &gt;= #{dto.minPrice}
+            </if>
+            <if test="dto.getMaxPrice() != null">
+                and p.price &lt;= #{dto.maxPrice}
+            </if>
+        </where>
+        <!-- 排序（仅允许 ASC/DESC 防 SQL 注入） -->
+        <if test="dto.getSalesSort() != null and (dto.getSalesSort() == 'ASC' or dto.getSalesSort() == 'DESC' or dto.getSalesSort() == 'asc' or dto.getSalesSort() == 'desc')">
+            order by p.sales ${dto.salesSort}
+        </if>
+    </select>
+
+    <select id="getProductRating" resultType="string">
+        select round(avg(br.score), 1) from business_rating br where br.product_id = #{productId}
+    </select>
+
+    <select id="selectUnratedProducts" resultType="cn.zenshop.model.vo.ProductPageVo">
+        select p.id,
+               p.name,
+               p.business_id,
+               p.category_id,
+               pc.name categoryName,
+               p.description,
+               p.price,
+               p.stock,
+               p.sales,
+               p.status,
+               p.updated_time
+        from product p
+        left join product_category pc on p.category_id = pc.id
+        where p.business_id = #{businessId}
+          and p.is_delete = 1
+          and not exists (
+            select 1 from business_rating br
+            where br.product_id = p.id and br.user_id = #{userId}
+          )
+        order by p.updated_time desc
+    </select>
+
+</mapper>

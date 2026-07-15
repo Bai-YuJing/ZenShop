@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.zenshop.server.mapper.CouponMapper">
+
+    <select id="selectCouponPage" resultType="cn.zenshop.model.entity.Coupon">
+        select c.*
+        from coupon c
+        <where>
+            <if test="dto.name != null and dto.name != ''">
+                and c.name like concat('%', #{dto.name}, '%')
+            </if>
+            <if test="dto.type != null">
+                and c.type = #{dto.type}
+            </if>
+            <if test="dto.status != null">
+                and c.status = #{dto.status}
+            </if>
+        </where>
+        <if test="dto.remainingSort != null and (dto.remainingSort == 'ASC' or dto.remainingSort == 'DESC' or dto.remainingSort == 'asc' or dto.remainingSort == 'desc')">
+            order by (coalesce(c.total, 999999999) - coalesce((select count(*) from user_coupon uc where uc.coupon_id = c.id), 0)) ${dto.remainingSort}
+        </if>
+        <if test="dto.remainingSort == null or dto.remainingSort == ''">
+            order by c.created_time desc
+        </if>
+    </select>
+
+</mapper>

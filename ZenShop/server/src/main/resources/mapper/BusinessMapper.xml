@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.zenshop.server.mapper.BusinessMapper">
+
+    <select id="getBusinessById" resultType="cn.zenshop.model.vo.BusinessVo">
+        select bs.id,
+               bs.name,
+               bs.phone,
+               bs.email,
+               bs.logo,
+               bs.description,
+               bs.category_id,
+               bs.status,
+               bs.updated_time,
+               bs.created_time,
+               bs.last_login_time,
+               ca.name categoryName,
+               ba.province_id,
+               ba.city_id,
+               ba.district_id,
+               ba.detailed_address,
+               (select round(avg(br.score), 1) from business_rating br where br.business_id = bs.id) ratting
+        FROM business bs
+                 LEFT JOIN category ca ON bs.category_id = ca.id
+                 LEFT JOIN business_address ba ON bs.id = ba.business_id
+        WHERE bs.id = #{id}
+    </select>
+    <select id="adminGetBusinessPage" resultType="cn.zenshop.model.vo.BusinessPageVo">
+        select bs.id,
+               bs.name,
+               bs.phone,
+               bs.email,
+               bs.logo,
+               bs.description,
+               bs.category_id,
+               bs.status,
+               bs.updated_time,
+               bs.last_login_time,
+               ca.name categoryName,
+               ba.province_id,
+               ba.city_id,
+               ba.district_id,
+               (select round(avg(br.score), 1) from business_rating br where br.business_id = bs.id) ratting
+        from business bs
+                 left join category ca on ca.id = bs.category_id
+                 left join business_address ba on ba.business_id = bs.id
+        <where>
+            <if test="pageDto.name != null and pageDto.name != ''">
+                and bs.name LIKE concat('%',#{pageDto.name},'%')
+            </if>
+            <if test="pageDto.categoryId != null">
+                and bs.category_id = #{pageDto.categoryId}
+            </if>
+            <if test="pageDto.provinceId != null">
+                and ba.province_id = #{pageDto.provinceId}
+            </if>
+            <if test="pageDto.cityId != null">
+                and ba.city_id = #{pageDto.cityId}
+            </if>
+            <if test="pageDto.districtId != null">
+                and ba.district_id = #{pageDto.districtId}
+            </if>
+            <if test="pageDto.status != null">
+                and bs.status = #{pageDto.status}
+            </if>
+            <!-- 评分区间筛选 -->
+            <if test="pageDto.minRating != null">
+                and (select round(avg(br.score), 1) from business_rating br where br.business_id = bs.id) &gt;= #{pageDto.minRating}
+            </if>
+            <if test="pageDto.maxRating != null">
+                and (select round(avg(br.score), 1) from business_rating br where br.business_id = bs.id) &lt;= #{pageDto.maxRating}
+            </if>
+        </where>
+        <!-- 评分排序 -->
+        <if test="pageDto.ratingSort != null and (pageDto.ratingSort == 'ASC' or pageDto.ratingSort == 'DESC' or pageDto.ratingSort == 'asc' or pageDto.ratingSort == 'desc')">
+            order by ratting ${pageDto.ratingSort}
+        </if>
+        <if test="pageDto.ratingSort == null or pageDto.ratingSort == ''">
+            order by bs.updated_time desc
+        </if>
+    </select>
+    <select id="userGetBusinessPage" resultType="cn.zenshop.model.vo.BusinessPageVo">
+        select bs.id,
+        bs.name,
+        bs.logo,
+        bs.description,
+        bs.category_id,
+        ba.province_id,
+        ba.city_id,
+        ba.district_id,
+        (select round(avg(br.score), 1) from business_rating br where br.business_id = bs.id) ratting
+        from business bs
+        left join category ca on ca.id = bs.category_id
+        left join business_address ba on ba.business_id = bs.id
+        <where>
+            and bs.status IN (2, 6)
+            <if test="pageDto.name != null and pageDto.name != ''">
+                and bs.name LIKE concat('%',#{pageDto.name},'%')
+            </if>
+            <if test="pageDto.categoryId != null">
+                and bs.category_id = #{pageDto.categoryId}
+            </if>
+            <if test="pageDto.provinceId != null">
+                and ba.province_id = #{pageDto.provinceId}
+            </if>
+            <if test="pageDto.cityId != null">
+                and ba.city_id = #{pageDto.cityId}
+            </if>
+            <if test="pageDto.districtId != null">
+                and ba.district_id = #{pageDto.districtId}
+            </if>
+        </where>
+    </select>
+
+</mapper>
