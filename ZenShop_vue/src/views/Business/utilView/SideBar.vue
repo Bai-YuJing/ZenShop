@@ -11,7 +11,7 @@
     >
       <el-menu-item index="profile">
         <el-icon><User /></el-icon>
-        <span>个人信息</span>
+        <span>商家信息</span>
       </el-menu-item>
       <el-menu-item index="employee">
         <el-icon><UserFilled /></el-icon>

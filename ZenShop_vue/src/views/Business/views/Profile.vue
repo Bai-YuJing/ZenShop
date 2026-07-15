@@ -2,7 +2,7 @@
   <div class="profile-page">
     <!-- 头部 -->
     <div class="page-header">
-      <h2>个人信息</h2>
+      <h2>商家信息</h2>
     </div>
 
     <div v-if="loading" class="loading-wrap">

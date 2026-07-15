@@ -635,7 +635,7 @@ const confirmFreeze = async () => {
 
 /** 查看驳回/冻结原因 */
 const handleViewReason = async (row: any) => {
-  const type = 2  // 1=驳回, 2=冻结
+  const type = row.status === 5 ? 1 : 2  // 1=驳回, 2=冻结
   try {
     const reasonId = await businessApi.getReason(row.id, type) as any
     // 根据状态选择对应的原因列表
